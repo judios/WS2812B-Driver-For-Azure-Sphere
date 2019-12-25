@@ -1,0 +1,12 @@
+﻿{
+  "SchemaVersion": 1,
+  "Name": "WS2812B_Example",
+  "ComponentId": "f8b3f11b-cc85-403e-b0d6-b4a18431f2a0",
+  "EntryPoint": "/bin/app",
+  "CmdArgs": [],
+  "Capabilities": {
+    "Gpio": [ 9 ],
+    "AllowedApplicationConnections": []
+  },
+  "ApplicationType": "Default"
+}
