@@ -6,7 +6,7 @@
   "CmdArgs": [],
   "Capabilities": {
     "SpiMaster": [ "ISU1" ],
-    "Gpio": [ 9 ],
+    "Gpio": [ 9, 12 ],
     "AllowedApplicationConnections": []
   },
   "ApplicationType": "Default"

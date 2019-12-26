@@ -8,6 +8,32 @@
 
 #include "WS2812B_Driver\ws2812b.h"
 
+#define SAMPLES 4
+int currentSample = 0;
+GPIO_Value_Type buttonState;
+
+static void CheckButtonState(int gpioFd)
+{
+
+	// Check for a button press
+	GPIO_Value_Type newButtonState;
+	int result = GPIO_GetValue(gpioFd, &newButtonState);
+	if (result != 0) {
+		Log_Debug("ERROR: Could not read button GPIO: %s (%d).\n", strerror(errno), errno);
+		return;
+	}
+
+	// If the button has just been pressed, change the LED blink interval
+	// The button has GPIO_Value_Low when pressed and GPIO_Value_High when released
+	if (newButtonState != buttonState) {
+		if (newButtonState == GPIO_Value_Low) {
+			currentSample = (currentSample + 1) % SAMPLES;
+			Log_Debug("Sample %d Active", currentSample);
+		}
+		buttonState = newButtonState;
+	}
+}
+
 int main(void)
 {
     // This minimal Azure Sphere app repeatedly toggles GPIO 9, which is the green channel of RGB
@@ -35,33 +61,54 @@ int main(void)
         return -1;
     }
 
+	int btnAFd = GPIO_OpenAsInput(12);
+
 
 	WS_PixelStrip_Init(16, 1);
 
-	const struct timespec sleepTime = { 1, 0 };
+	const struct timespec sleepTime = { 0, 500000000 };
 	const struct timespec sleepTime1 = { 0, 200000000 };
 	while (true) {
-		GPIO_SetValue(fd, GPIO_Value_Low);
-		WS_PiixelStrip_SetColor(-1, 0, 0, 255);
-		WS_PixelStrip_Show();
-		nanosleep(&sleepTime, NULL);
-		GPIO_SetValue(fd, GPIO_Value_High);
-		WS_PiixelStrip_SetColor(-1, 255, 0, 0);
-		WS_PixelStrip_Show();
-		nanosleep(&sleepTime, NULL);
 
-		WS_PiixelStrip_SetColor(-1, 0, 0, 0);
-		uint8_t  green = 255;
-		uint8_t  red = 0;
-		uint8_t delta = 1.0 / pixelCount * 255;
-		for (int i = 0; i < pixelCount; i++)
+		CheckButtonState(btnAFd);
+
+		switch (currentSample)
 		{
-			WS_PiixelStrip_SetColor(i, red, green, 0);
-			red += delta;
-			green -= delta;
+		case 1:
+			WS_PiixelStrip_SetColor(-1, 0, 0, 255);
 			WS_PixelStrip_Show();
 			nanosleep(&sleepTime1, NULL);
+			WS_PiixelStrip_SetColor(-1, 0, 255, 0);
+			WS_PixelStrip_Show();
+			nanosleep(&sleepTime1, NULL);
+			WS_PiixelStrip_SetColor(-1, 255, 0, 0);
+			WS_PixelStrip_Show();
+			nanosleep(&sleepTime1, NULL);
+			break;
+
+		case 2:		
+			WS_PiixelStrip_SetColor(-1, 0, 0, 0);
+			uint8_t  green = 255;
+			uint8_t  red = 0;
+			uint8_t delta = 1.0 / pixelCount * 255;
+			for (int i = 0; i < pixelCount; i++)
+			{
+				WS_PiixelStrip_SetColor(i, red, green, 0);
+				red += delta;
+				green -= delta;
+				WS_PixelStrip_Show();
+				nanosleep(&sleepTime1, NULL);
+			}
+			break;
+		default:
+			WS_PiixelStrip_SetColor(-1, 0, 0, 0);
+			WS_PixelStrip_Show();
+			GPIO_SetValue(fd, GPIO_Value_Low);
+			nanosleep(&sleepTime, NULL);
+			GPIO_SetValue(fd, GPIO_Value_High);
+			nanosleep(&sleepTime, NULL);
+			break;
 		}
-		nanosleep(&sleepTime, NULL);
+
     }
 }
