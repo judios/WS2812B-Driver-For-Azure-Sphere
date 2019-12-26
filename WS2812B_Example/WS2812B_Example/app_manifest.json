@@ -5,6 +5,7 @@
   "EntryPoint": "/bin/app",
   "CmdArgs": [],
   "Capabilities": {
+    "SpiMaster": [ "ISU1" ],
     "Gpio": [ 9 ],
     "AllowedApplicationConnections": []
   },

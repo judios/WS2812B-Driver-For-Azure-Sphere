@@ -6,6 +6,8 @@
 #include <applibs/log.h>
 #include <applibs/gpio.h>
 
+#include "WS2812B_Driver\ws2812b.h"
+
 int main(void)
 {
     // This minimal Azure Sphere app repeatedly toggles GPIO 9, which is the green channel of RGB
@@ -33,11 +35,33 @@ int main(void)
         return -1;
     }
 
-    const struct timespec sleepTime = {1, 0};
-    while (true) {
-        GPIO_SetValue(fd, GPIO_Value_Low);
-        nanosleep(&sleepTime, NULL);
-        GPIO_SetValue(fd, GPIO_Value_High);
-        nanosleep(&sleepTime, NULL);
+
+	WS_PixelStrip_Init(16, 1);
+
+	const struct timespec sleepTime = { 1, 0 };
+	const struct timespec sleepTime1 = { 0, 200000000 };
+	while (true) {
+		GPIO_SetValue(fd, GPIO_Value_Low);
+		WS_PiixelStrip_SetColor(-1, 0, 0, 255);
+		WS_PixelStrip_Show();
+		nanosleep(&sleepTime, NULL);
+		GPIO_SetValue(fd, GPIO_Value_High);
+		WS_PiixelStrip_SetColor(-1, 255, 0, 0);
+		WS_PixelStrip_Show();
+		nanosleep(&sleepTime, NULL);
+
+		WS_PiixelStrip_SetColor(-1, 0, 0, 0);
+		uint8_t  green = 255;
+		uint8_t  red = 0;
+		uint8_t delta = 1.0 / pixelCount * 255;
+		for (int i = 0; i < pixelCount; i++)
+		{
+			WS_PiixelStrip_SetColor(i, red, green, 0);
+			red += delta;
+			green -= delta;
+			WS_PixelStrip_Show();
+			nanosleep(&sleepTime1, NULL);
+		}
+		nanosleep(&sleepTime, NULL);
     }
 }
