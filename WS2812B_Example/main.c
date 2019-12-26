@@ -8,11 +8,11 @@
 
 #include "WS2812B_Driver\ws2812b.h"
 
-#define SAMPLES 4
+#define SAMPLES 5
 int currentSample = 0;
 GPIO_Value_Type buttonState;
 
-static void CheckButtonState(int gpioFd)
+static int CheckButtonState(int gpioFd)
 {
 
 	// Check for a button press
@@ -29,9 +29,11 @@ static void CheckButtonState(int gpioFd)
 		if (newButtonState == GPIO_Value_Low) {
 			currentSample = (currentSample + 1) % SAMPLES;
 			Log_Debug("Sample %d Active", currentSample);
+			return 1;
 		}
 		buttonState = newButtonState;
 	}
+	return 0;
 }
 
 int main(void)
@@ -67,10 +69,14 @@ int main(void)
 	WS_PixelStrip_Init(16, 1);
 
 	const struct timespec sleepTime = { 0, 500000000 };
-	const struct timespec sleepTime1 = { 0, 200000000 };
+	const struct timespec sleepTime1 = { 0, 100000000 };
 	while (true) {
 
-		CheckButtonState(btnAFd);
+		if (CheckButtonState(btnAFd))
+		{
+			WS_PiixelStrip_SetColor(-1, 0, 0, 0);
+			WS_PixelStrip_Show();
+		}
 
 		switch (currentSample)
 		{
@@ -86,23 +92,44 @@ int main(void)
 			nanosleep(&sleepTime1, NULL);
 			break;
 
-		case 2:		
-			WS_PiixelStrip_SetColor(-1, 0, 0, 0);
-			uint8_t  green = 255;
-			uint8_t  red = 0;
+		case 2:
+		{
+			uint8_t green = 255;
+			uint8_t red = 0;
+			uint8_t blue = 0;
 			uint8_t delta = 1.0 / pixelCount * 255;
 			for (int i = 0; i < pixelCount; i++)
 			{
-				WS_PiixelStrip_SetColor(i, red, green, 0);
+				WS_PiixelStrip_SetColor(i, red, green, blue);
 				red += delta;
 				green -= delta;
 				WS_PixelStrip_Show();
 				nanosleep(&sleepTime1, NULL);
 			}
+			for (int i = 0; i < pixelCount; i++)
+			{
+				WS_PiixelStrip_SetColor(i, red, green, blue);
+				red -= delta;
+				blue += delta;
+				WS_PixelStrip_Show();
+				nanosleep(&sleepTime1, NULL);
+			}
+			for (int i = 0; i < pixelCount; i++)
+			{
+				WS_PiixelStrip_SetColor(i, red, green, blue);
+				blue -= delta;
+				green += delta;
+				WS_PixelStrip_Show();
+				nanosleep(&sleepTime1, NULL);
+			}
+		}
+			break;
+		case 3:
+			WS_PiixelStrip_SetColor(-1, 255, 255, 255);
+			WS_PixelStrip_Show();
+			nanosleep(&sleepTime, NULL);
 			break;
 		default:
-			WS_PiixelStrip_SetColor(-1, 0, 0, 0);
-			WS_PixelStrip_Show();
 			GPIO_SetValue(fd, GPIO_Value_Low);
 			nanosleep(&sleepTime, NULL);
 			GPIO_SetValue(fd, GPIO_Value_High);
