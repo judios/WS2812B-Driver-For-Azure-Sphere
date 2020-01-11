@@ -12,7 +12,7 @@ From the WS2812B datasheet, each led requires 24bits (3 bytes. Green, Red, Blue)
 
 ![](https://raw.githubusercontent.com/judios/WS2812B-Driver-For-Azure-Sphere/master/docs/Signal.PNG)
 
-Therefore the translation 1 = 110, 0 = 100 can be used to send the signal to the WS2812B led strip theough the SPI MOSI. Provided that the clock of the SPI is set to achieve 300ns per bit. Which is exactly 3.33Mhz, but can be aproximated to 3.4Mhz.
+Therefore the translation 1 = 110, 0 = 100 can be used to send the signal to the WS2812B led strip through the SPI MOSI. Provided that the clock of the SPI is set to achieve 300ns per bit. Which is exactly 3.33Mhz, but can be aproximated to 3.4Mhz.
 
 Since there are 3 spi bits needed per WS2812B bit, 72 spi bits are needed per led. These are broken into 3 sets of 3 bytes, one set per color.
 

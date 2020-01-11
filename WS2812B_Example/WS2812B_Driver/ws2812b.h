@@ -21,7 +21,7 @@ int WS_PixelStrip_Init(int count, int spi);
 
 /* Sets the Color for the pixel at the given index 
    use index = -1 to set the same color for all pixels */
-void WS_PiixelStrip_SetColor(int index, uint8_t red, uint8_t green, uint8_t blue);
+void WS_PixelStrip_SetColor(int index, uint8_t red, uint8_t green, uint8_t blue);
 
 /* Sends the signal with the current properties for all of the pixels in the strip */
 void WS_PixelStrip_Show();

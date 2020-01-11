@@ -75,20 +75,20 @@ int main(void)
 
 		if (CheckButtonState(btnAFd))
 		{
-			WS_PiixelStrip_SetColor(-1, 0, 0, 0);
+			WS_PixelStrip_SetColor(-1, 0, 0, 0);
 			WS_PixelStrip_Show();
 		}
 
 		switch (currentSample)
 		{
 		case 1:
-			WS_PiixelStrip_SetColor(-1, 0, 0, 255);
+			WS_PixelStrip_SetColor(-1, 0, 0, 255);
 			WS_PixelStrip_Show();
 			nanosleep(&sleepTime1, NULL);
-			WS_PiixelStrip_SetColor(-1, 0, 255, 0);
+			WS_PixelStrip_SetColor(-1, 0, 255, 0);
 			WS_PixelStrip_Show();
 			nanosleep(&sleepTime1, NULL);
-			WS_PiixelStrip_SetColor(-1, 255, 0, 0);
+			WS_PixelStrip_SetColor(-1, 255, 0, 0);
 			WS_PixelStrip_Show();
 			nanosleep(&sleepTime1, NULL);
 			break;
@@ -101,7 +101,7 @@ int main(void)
 			uint8_t delta = 1.0 / pixelCount * 255;
 			for (int i = 0; i < pixelCount; i++)
 			{
-				WS_PiixelStrip_SetColor(i, red, green, blue);
+				WS_PixelStrip_SetColor(i, red, green, blue);
 				red += delta;
 				green -= delta;
 				WS_PixelStrip_Show();
@@ -109,7 +109,7 @@ int main(void)
 			}
 			for (int i = 0; i < pixelCount; i++)
 			{
-				WS_PiixelStrip_SetColor(i, red, green, blue);
+				WS_PixelStrip_SetColor(i, red, green, blue);
 				red -= delta;
 				blue += delta;
 				WS_PixelStrip_Show();
@@ -117,7 +117,7 @@ int main(void)
 			}
 			for (int i = 0; i < pixelCount; i++)
 			{
-				WS_PiixelStrip_SetColor(i, red, green, blue);
+				WS_PixelStrip_SetColor(i, red, green, blue);
 				blue -= delta;
 				green += delta;
 				WS_PixelStrip_Show();
@@ -126,7 +126,7 @@ int main(void)
 		}
 			break;
 		case 3:
-			WS_PiixelStrip_SetColor(-1, 255, 255, 255);
+			WS_PixelStrip_SetColor(-1, 255, 255, 255);
 			WS_PixelStrip_Show();
 			nanosleep(&sleepTime, NULL);
 			break;

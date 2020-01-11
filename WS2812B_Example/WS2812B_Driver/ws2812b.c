@@ -46,7 +46,7 @@ void WS_Color_SetValue(uint8_t value, WS_Color *wscolor)
 	if (0b00000001 & value) wscolor->b3 += 0b00000010;
 }
 
-void WS_PiixelStrip_SetColor(int index, uint8_t red, uint8_t green, uint8_t blue)
+void WS_PixelStrip_SetColor(int index, uint8_t red, uint8_t green, uint8_t blue)
 {
 	if (index < 0)
 	{
@@ -117,7 +117,7 @@ int WS_PixelStrip_Init(int count, int spi)
 	if (pixels == 0) return -1;	
 
 	pixelCount = count;
-	WS_PiixelStrip_SetColor(-1, 0, 0, 0);
+	WS_PixelStrip_SetColor(-1, 0, 0, 0);
 
 	return 1;
 }
