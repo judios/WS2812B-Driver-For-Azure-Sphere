@@ -65,8 +65,9 @@ int main(void)
 
 	int btnAFd = GPIO_OpenAsInput(12);
 
+	int pixelCount = 16;
 
-	WS_PixelStrip_Init(16, 1);
+	WS_PixelStrip_Init(pixelCount, 1);
 
 	const struct timespec sleepTime = { 0, 500000000 };
 	const struct timespec sleepTime1 = { 0, 100000000 };

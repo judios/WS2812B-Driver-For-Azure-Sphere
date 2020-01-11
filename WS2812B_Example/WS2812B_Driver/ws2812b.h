@@ -12,7 +12,6 @@ typedef struct {
 	WS_Color Blue;
 }WS_Pixel;
 
-extern int pixelCount;
 
 /* Initialize Pixel Strip 
    count : number of pixels

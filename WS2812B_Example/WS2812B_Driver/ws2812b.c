@@ -9,7 +9,18 @@
 #include "ws2812b.h"
 
 
-#define RESL 36
+/* Using 3400000 bps (bits per second) */
+
+/* Bit Lapse */
+// 1 sec / 2400000 = 0.000000294 sec = 294ns */
+
+/* Reset Time */
+// 6 integers * 32 bits / integer * 294ns / bit = 56448ns = 56.448 microseconds
+
+
+/* Some strips need around 400ns for bit lapse, use 2400000bps, and 4 integers for reset time */
+
+#define RESL 6
 
 int pixelCount = -1;
 
@@ -73,7 +84,7 @@ int  SPI_init(int spi)
 		return -1;
 	}
 
-	int result = SPIMaster_SetBusSpeed(spiFd, 3400000);
+	int result = SPIMaster_SetBusSpeed(spiFd, 3400000);  // Adjust bps if needed
 	if (result != 0) {
 		Log_Debug("ERROR: SPIMaster_SetBusSpeed: errno=%d (%s)\n", errno, strerror(errno));
 		return -1;
