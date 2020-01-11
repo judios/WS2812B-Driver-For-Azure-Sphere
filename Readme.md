@@ -8,7 +8,7 @@ The technique described in the post uses the SPI hardware of a LPC810 MCU in ord
 
 ## WS2812B signal requirements
 
-From the WS2812B datasheet, each led requires 24bits (3 bytes. Green, Red, Blue) to set the color. These bits are not given as HIGH for "1" and LOW for "0"", rather a signal of 600ns HIGH + 300ns LOW is required for a "1", and a signal of 300ns HIGH + 600ns LOW is required fror a "0"". These values have been chosen arbitrarily from the aceptable range.
+From the WS2812B datasheet, each led requires 24bits (3 bytes. Green, Red, Blue) to set the color. These bits are not given as HIGH for "1" and LOW for "0"", rather a signal of 600ns HIGH + 300ns LOW is required for a "1", and a signal of 300ns HIGH + 600ns LOW is required for a "0"". These values have been chosen arbitrarily from the aceptable range.
 
 ![](https://raw.githubusercontent.com/judios/WS2812B-Driver-For-Azure-Sphere/master/docs/Signal.PNG)
 
@@ -16,7 +16,7 @@ Therefore the translation 1 = 110, 0 = 100 can be used to send the signal to the
 
 Since there are 3 spi bits needed per WS2812B bit, 72 spi bits are needed per led. These are broken into 3 sets of 3 bytes, one set per color.
 
-The technique in the post uses two words of 12 bits to set each color of the led. However, Azure Sphere SDK does not allows to change the word size of the SPI, and it is not really needed. One can use three bytes per color:
+The technique in the post uses two words of 12 bits to set each color of the led. However, Azure Sphere SDK does not allows to change the word size of the SPI, and it is not really needed. One can use three bytes (uint8_t) per color:
 
 ```
 b1 : 1#0 1#0 1#
@@ -44,6 +44,18 @@ Note, the second bit in each triplet is the one carrying the value, the bits 7, 
 	if (0b00000010 & value) wscolor->b3 += 0b00010000;
 	if (0b00000001 & value) wscolor->b3 += 0b00000010;
 ```
+
+## WS2811 Driver
+
+Following the same approach, a driver for the WS2811 ic was created. In this case, a signal of 1200ns HIGH + 1200ns LOW is required for a "1", and a signal of 400ns HIGH + 2000ns LOW is required for a "0". The translation will then need 6 spi bits per WS2811 bit required.
+
+```
+1 = 111000
+0 = 100000
+```
+
+Here, there are 24 spi bits needed for each color. Then, uint16_t type was used instead for b1, b2, and b3
+
 
 ## Credits
 
