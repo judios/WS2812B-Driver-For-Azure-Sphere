@@ -22,9 +22,9 @@
 
 #define RESL 6
 
-int pixelCount = -1;
+static int pixelCount = -1;
 
-int spiFd = -1;
+static int spiFd = -1;
 
 WS_Pixel* pixels;
 

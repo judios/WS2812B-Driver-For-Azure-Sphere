@@ -5,7 +5,7 @@ cmake_minimum_required (VERSION 3.8)
 project (WS2812B_Example C)
 
 # Create executable
-add_executable (${PROJECT_NAME} main.c WS2812B_Driver/ws2812b.c)
+add_executable (${PROJECT_NAME} main.c WS2812B_Driver/ws2812b.c WS2811_Driver/ws2811.c)
 target_link_libraries (${PROJECT_NAME} applibs pthread gcc_s c)
 
 # Add MakeImage post-build command

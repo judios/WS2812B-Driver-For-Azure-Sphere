@@ -14,9 +14,9 @@
 
 #define RESL 4  
 
-int pixelCount = -1;
+static int pixelCount = -1;
 
-int spiFd = -1;
+static int spiFd = -1;
 
 WS11_Pixel* pixels;
 
@@ -42,29 +42,29 @@ void WS11_Color_SetValue(uint8_t value, WS11_Color *wscolor)
 	if (0b00000001 & value) wscolor->b3 += 0b0000000000011000;
 }
 
-void WS_PiixelStrip_SetColor(int index, uint8_t red, uint8_t green, uint8_t blue)
+void WS11_PixelStrip_SetColor(int index, uint8_t red, uint8_t green, uint8_t blue)
 {
 	if (index < 0)
 	{
 		for (int i = 0; i < pixelCount; i++)
 		{
-			WS_Color_SetValue(red, &pixels[i].Red);
-			WS_Color_SetValue(green, &pixels[i].Green);
-			WS_Color_SetValue(blue, &pixels[i].Blue);
+			WS11_Color_SetValue(red, &pixels[i].Red);
+			WS11_Color_SetValue(green, &pixels[i].Green);
+			WS11_Color_SetValue(blue, &pixels[i].Blue);
 		}
 		return;
 	}
 
 	if(index < pixelCount)
 	{
-		WS_Color_SetValue(red, &pixels[index].Red);
-		WS_Color_SetValue(green, &pixels[index].Green);
-		WS_Color_SetValue(blue, &pixels[index].Blue);
+		WS11_Color_SetValue(red, &pixels[index].Red);
+		WS11_Color_SetValue(green, &pixels[index].Green);
+		WS11_Color_SetValue(blue, &pixels[index].Blue);
 	}
 }
 
 
-int  SPI_init(int spi)
+int  WS11_SPI_init(int spi)
 {
 	SPIMaster_Config config;
 	int ret = SPIMaster_InitConfig(&config);
@@ -103,7 +103,7 @@ int  SPI_init(int spi)
 int WS11_PixelStrip_Init(int count, int spi)
 {
 	/* Initialize SPI */
-	if(SPI_init(spi) < 0) return -1;
+	if(WS11_SPI_init(spi) < 0) return -1;
 
 	/* Initialize data to reset signal */
 	for (int i = 0; i < RESL; i++)
@@ -112,8 +112,8 @@ int WS11_PixelStrip_Init(int count, int spi)
 	pixels = (WS11_Pixel*)calloc(count, sizeof(WS11_Pixel));
 	if (pixels == 0) return -1;	
 
-	wspixelCount = count;
-	WS11_PiixelStrip_SetColor(-1, 0, 0, 0);
+	pixelCount = count;
+	WS11_PixelStrip_SetColor(-1, 0, 0, 0);
 
 	return 1;
 }
